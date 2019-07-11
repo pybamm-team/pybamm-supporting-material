@@ -17,6 +17,8 @@ header-includes:
 - Designed as a Common Modelling Framework for the Multiscale Modelling Faraday project.
   Facilitates sharing and distribution of **model** and **numerical methodologies** .
 
+- Not a general purpose solver (e.g. Comsol), focuses specifically on battery modelling.
+
 - Use it for:
     1. Running a battery simulation using one of the pre-built models, either as a
        single simulation or within parameter estimation
@@ -29,7 +31,7 @@ header-includes:
 
 - developers:
 
-\includegraphics[width=0.8\textwidth]{images/developers.pdf}
+\centering \includegraphics[width=0.9\textwidth]{images/developers.pdf}
 
 # Organisation
 
@@ -54,8 +56,9 @@ header-includes:
     2. Composite Model 
     3. Newman-Tiedemann Model
 - Discretisations:
-    1. 1D Finite Volumes
-    2. Control Volumes (electrode particle domains)*
+    1. 1D Finite Volumes (general purpose)
+    2. 2 + 1D Finite Elements for current collector domain
+    2. Control Volumes for electrode particle domains*
 - Solvers:
     1. Scipy ODE solvers
     2. Scikits ODE & DAE solvers (SUNDIALS)
@@ -84,8 +87,9 @@ header-includes:
 \begin{columns}
 \begin{column}{0.4\textwidth}
 \begin{itemize}
-\item Communication between the stages is done via expression trees representing equations
+  \item Communication between the stages is done via {\it expression trees} representing equations
 \item Different stages operate on these. E.g. Parameter Values walks though tree replacing symbolic parameters with scalars.
+\item Pybamm can take {\it derivatives} of expression trees (i.e. for Jacobians)
 \end{itemize}
 \end{column}
 \begin{column}{0.6\textwidth}  %%<--- here
@@ -116,21 +120,40 @@ expr = pybamm.div( D(c) * pybamm.grad(c) ) + a * c
 
 # Use Case 2 - Using your own parameters
 
-- Each model has a set of default parameters that you can use
+- Each model has a set of default parameters that you can use, for example:
 
 ```python
 model = pybamm.lithium_ion.SPM()
 param = model.default_parameter_values
 ```
 
-- You can change individual parameters in a python script using:
+- You can change individual parameters in a python script:
 
 ```python
 param['Typical current [A]'] = 1.4
 ```
 
-- Alternatively, the default parameter sets are defined as `csv` files, so can supply
+- ... or, the default parameter sets are defined as `csv` files in dimensional units, so can supply
   your own to specify an entire parameter set.
+
+# Use Case 3 - Plotting additional variables
+
+- Each model has a list of variables that are calculated from the solution
+  variables. These can be dimensional versions of solution variables or other useful
+  quantities for comparing different battery models.
+
+```Python
+voltage = pybamm.ProcessedVariable(
+            model.variables['Terminal voltage [V]'], 
+            solution.t, solution.y, mesh=mesh)
+
+t = np.linspace(0,1,250)
+plt.plot(t, voltage(t))
+```
+
+- Users can defined *custom variables* using expression trees. These are discretised
+  along with the other equations in the model (can therefore contain derivatives)
+
 
 # Other potential use cases
 
@@ -146,5 +169,10 @@ param['Typical current [A]'] = 1.4
 
 # Summary
 
-
+- PyBaMM is a library for describing and solving continuum battery models
+- Exposes a decoupled pipeline design for solving a model, so that users can customise
+  with new models, discretisations, parameterisations, solvers etc.
+- We welcome new developers at this beta testing stage, and are keen to get your feedback, bug
+  reports and suggestions!
+- Get the code or get in contact at: <https://github.com/pybamm-team/PyBaMM>
 
