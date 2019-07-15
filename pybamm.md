@@ -1,5 +1,5 @@
 ---
-title:  'Python Battery Mathematical Modelling (PyBAMM)'
+title:  'Python Battery Mathematical Modelling (PyBaMM)'
 author: Martin Robinson
 date: 15th July, 2019
 urlcolor: blue
@@ -11,7 +11,7 @@ header-includes:
 
 # What is PyBaMM
 
-- *Python Battery Mathematical Modelling* (PyBAMM) solves continuum models for batteries,
+- *Python Battery Mathematical Modelling* (PyBaMM) solves continuum models for batteries,
   using both numerical methods and asymptotic analysis.
 
 - Designed as a Common Modelling Framework for the Multiscale Modelling Faraday project.
@@ -104,11 +104,10 @@ header-includes:
 1. Create a Python class representing your model\footnote{see repository documentation for more details}
 2. Define `rhs`, `algebraic`, `boundary_conditions`, `initial_conditions`, `variables`
    as **expression trees**
-3. An expression tree is built from building blocks such as
-   `pybamm.Variable` or `pybamm.Parameter`, and normal Python operators such as `+`. For
-   example, the expression $$\nabla \cdot D(c) \nabla c + a c$$
-   
-   is written in Python as
+3. An expression tree is built from building blocks such as `pybamm.Variable` or
+   `pybamm.Parameter`, and normal Python operators such as `+`. e.g., the expression
+   $$\nabla \cdot D(c) \nabla c + a c$$ written as:
+
 
 ```python
 c = pybamm.Variable('c')
@@ -117,6 +116,14 @@ D = lambda x: pybamm.FunctionParameter('D', x)
 
 expr = pybamm.div( D(c) * pybamm.grad(c) ) + a * c 
 ```
+
+
+# Use Case 1a - Add/Customise your own submodel
+
+- **Note:** In-built models in PyBaMM consist of sub-models (e.g. electrolyte diffusion
+  or interface kinetics). Often simpler to replace/add a new sub-model rather than
+  write a new model from scratch
+
 
 # Use Case 2 - Using your own parameters
 
@@ -167,6 +174,8 @@ plt.plot(t, voltage(t))
 3. **Others..?**: We are keen to hear your ideas! PyBaMM is in a formative stage so keen
    to receive and incorporate feedback into the library.
 
+# Live demo time!!
+
 # Summary
 
 - PyBaMM is a library for describing and solving continuum battery models
@@ -174,5 +183,6 @@ plt.plot(t, voltage(t))
   with new models, discretisations, parameterisations, solvers etc.
 - We welcome new developers at this beta testing stage, and are keen to get your feedback, bug
   reports and suggestions!
-- Get the code or get in contact at: <https://github.com/pybamm-team/PyBaMM>
+- Holding a 2-day PyBaMM workshop on the 31st July in Oxford, spaces available.
+- Get the code, browse the documentation, or get in contact at: <https://github.com/pybamm-team/PyBaMM>
 
