@@ -1,13 +1,12 @@
 ---
 title:  'Python Battery Mathematical Modelling (PyBaMM)'
-author: Martin Robinson
-date: 15th July, 2019
+author: Valentin Sulzer (adapted from Martin Robinson)
+date: October 14th, 2019
 urlcolor: blue
 link-citations: true
 header-includes:
     - \usepackage{multimedia}
 ---
-
 
 # What is PyBaMM
 
@@ -35,34 +34,71 @@ header-includes:
 
 # Organisation
 
-- developed as an open source (BSD licensed) Python library on GitHub: 
+- developed as an open source (BSD licensed) Python library on GitHub:
     - <https://github.com/pybamm-team/PyBaMM>
 
 - software engineering best practices:
     - Full suite of unit and integration tests
-    - Automated testing on Linux, Mac and Windows using Python 3.5+
+    - Automated testing on Linux, Mac and Windows using Python 3.6+
     - Generated API documentation and example notebooks/scripts demonstrating
       features
     - Project management, issue tracking and code review via GitHub
 
-# Current features
+# Why have a Common Modelling Framework?
+
+- Don't reinvent the wheel
+- Use everyone else's hard work
+- Benchmarking: **directly** compare models and solvers
+- Make it easy for others to use your work
+
+Plus:
+
+- Get feedback on your code and models
+- Seeing other people's code makes you a better coder
+
+# Why use Git?
+
+\centering \includegraphics[width=0.6\textwidth]{images/phd-comics-versions.eps}
+
+# Why use Git?
+
+- Backups!
+- Version control
+- Collaboration
+- Project management
+- Employability
+
+# Why use unit tests?
+
+- Make sure code is doing what you think it's doing
+- Confidence in changes
+- Catch bugs early
+- Simplify debugging process
+- "Green tick" validation
+- Helps figure out what to do next
+- *Saves* time
+
+- Very useful when:
+    - codebase is too big to fit in your head
+    - more than 2 people making changes
+- (Not necessary for short-term, single-user/developer projects)
+
+# Current features of PyBaMM
 
 - Lithium-ion battery models:
-    1. Single Particle Model (SPM) 
+    1. Single Particle Model (SPM)
     2. Single Particle Model with Electrolyte (SPMe)
     3. Doyle-Fuller-Newman (DFN)
 - Lead-acid battery models:
-    1. LOQS Model 
-    2. Composite Model 
-    3. Newman-Tiedemann Model
 - Discretisations:
     1. 1D Finite Volumes (general purpose)
     2. 2 + 1D Finite Elements for current collector domain
-    2. Control Volumes for electrode particle domains*
+    3. Control Volumes for electrode particle domains*
 - Solvers:
     1. Scipy ODE solvers
     2. Scikits ODE & DAE solvers (SUNDIALS)
-    3. Dae-Cpp DAE solver (Ivan Korotkin - Southampton)*
+    3. KLU solver in C++ (in progress)
+    3. Dae-Cpp DAE solver (in progress)*
 
 # PyBaMM Pipeline
 
@@ -76,7 +112,7 @@ header-includes:
 \end{column}
 \begin{column}{0.6\textwidth}  %%<--- here
     \begin{center}
-\centering \includegraphics[width=1.0\textwidth]{images/pipeline.pdf} 
+\centering \includegraphics[width=1.0\textwidth]{images/pipeline.pdf}
      \end{center}
 \end{column}
 \end{columns}
@@ -94,7 +130,7 @@ header-includes:
 \end{column}
 \begin{column}{0.6\textwidth}  %%<--- here
     \begin{center}
-\centering \includegraphics[width=1.0\textwidth]{images/expression_tree.pdf} 
+\centering \includegraphics[width=1.0\textwidth]{images/expression_tree.pdf}
      \end{center}
 \end{column}
 \end{columns}
@@ -114,7 +150,7 @@ c = pybamm.Variable('c')
 a = pybamm.Parameter('a')
 D = lambda x: pybamm.FunctionParameter('D', x)
 
-expr = pybamm.div( D(c) * pybamm.grad(c) ) + a * c 
+expr = pybamm.div( D(c) * pybamm.grad(c) ) + a * c
 ```
 
 
@@ -151,7 +187,7 @@ param['Typical current [A]'] = 1.4
 
 ```Python
 voltage = pybamm.ProcessedVariable(
-            model.variables['Terminal voltage [V]'], 
+            model.variables['Terminal voltage [V]'],
             solution.t, solution.y, mesh=mesh)
 
 t = np.linspace(0,1,250)
@@ -167,7 +203,7 @@ plt.plot(t, voltage(t))
 1. **Custom discretisation**: discretisation is set on a per-domain basis (
    electrolyte, positive electrode particle, etc.). Can supply your own discretisation
    for one or more domains. Can be as general purpose or as model-specific as you
-   require. 
+   require.
 2. **Parameter estimation**: Those parameters that do not affect the discretisation can
    be altered and a new solutions obtained just be re-running the solver (i.e. no need
    to re-generate and discretise your model)
@@ -183,6 +219,5 @@ plt.plot(t, voltage(t))
   with new models, discretisations, parameterisations, solvers etc.
 - We welcome new developers at this beta testing stage, and are keen to get your feedback, bug
   reports and suggestions!
-- Holding a 2-day PyBaMM workshop on the 31st July in Oxford, spaces available.
+- I'm happy to give a more detailed introduction
 - Get the code, browse the documentation, or get in contact at: <https://github.com/pybamm-team/PyBaMM>
-
